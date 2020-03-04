@@ -8,7 +8,7 @@ class SerialAdapter:
         self.values = []
 
     def open(self, port : str):
-       self.ser = Serial(
+        self.ser = Serial(
             port=port,
             baudrate=9600,
             bytesize=EIGHTBITS,
@@ -37,14 +37,14 @@ class SerialAdapter:
             # Read available data
             buffer += self.ser.read(self.ser.inWaiting())
             if len(buffer) > 0:
-                print('buffer: ', buffer)
+                print('[SerialAdapter] Buffer: ', buffer)
 
             if len(buffer) >= 2:
                 value = buffer[:2]
                 buffer = buffer[2:]
                 value = int.from_bytes(value, byteorder='little', signed=False);
                 self.values.append(value)
-                pass
+                print('[SerialAdapter] Value: ', value)
 
     def getAll(self):
         temp = self.values.copy()

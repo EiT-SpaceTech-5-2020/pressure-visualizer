@@ -20,7 +20,7 @@ ser = Serial(
 
 while True:
     x += 0.3
-    value = int((np.sin(x) + 1) * np.power(2, 15))
+    value = int((np.sin(x) + 1) / 2 * np.power(2, 10))
     print(value)
     ser.write(value.to_bytes(2, byteorder="little", signed=False))
     #os.system("echo " + str(np.sin(x)) + " > COM2")
