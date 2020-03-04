@@ -1,0 +1,53 @@
+#:kivy 1.11.1
+
+
+<Menu>:
+    manager: screen_manager
+    orientation: "vertical"
+    ActionBar:
+        size_hint_y: 0.1
+        ActionView:
+            ActionPrevious:
+            ActionButton:
+                text: "Visualize"
+                on_press: 
+                    root.manager.current = 'screen_visualize'
+                    app.visualize()
+            ActionButton:
+                text: "Export"
+                on_press: root.manager.current= 'screen_export'
+            ActionButton:
+                text: "Calibrate"
+                on_press: root.manager.current= 'screen_calibrate'
+
+    Manager:
+        id: screen_manager
+
+<ScreenVisualize>:
+    Button:
+        text: "Visualize"
+<ScreenExport>:
+    Button:
+        text: "Export"
+<ScreenCalibrate>:
+    Button:
+        text: "Calibrate"
+
+<Manager>:
+    id: screen_manager
+    screen_visualize: screen_visualize
+    screen_export: screen_export
+    screen_calibrate: screen_calibrate
+
+    ScreenVisualize:
+        id: screen_visualize
+        name: 'screen_visualize'
+        manager: screen_manager
+    ScreenExport:
+        id: screen_export
+        name: 'screen_export'
+        manager: screen_manager
+    ScreenCalibrate:
+        id: screen_calibrate
+        name: 'screen_calibrate'
+        manager: screen_manager
