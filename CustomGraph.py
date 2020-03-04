@@ -3,20 +3,34 @@ from kivy.properties import (
     NumericProperty, ReferenceListProperty, ObjectProperty
 )
 import kivy_garden.graph as kg
+import math
 
-class Graph(Widget):
+class CustomGraph(kg.Graph):
     points = []
-    maxPoints = 10
-    def __init__(self, dataSource, **kwargs):
-        super(Graph, self).__init__(**kwargs)
-        self.dataSource = dataSource
-        self.graph = kg.Graph(xlabel='X', ylabel='Y', x_ticks_minor=5,
-              x_ticks_major=25, y_ticks_major=1,
-              y_grid_label=True, x_grid_label=True, padding=5,
-              x_grid=True, y_grid=True, xmin=-0, xmax=self.maxPoints, ymin=-0, ymax=1024 )
+    maxPoints = 100
+
+    def __init__(self, **kwargs):
+        super(CustomGraph, self).__init__(**kwargs)
+        self.xlabel = 'Time'
+        self.ylabel = 'Value'
+        self.x_ticks_minor=5
+        self.x_ticks_major=25
+        self.y_ticks_major=128
+        self.y_grid_label=True
+        self.x_grid_label=True
+        self.padding=5
+        self.x_grid=True
+        self.y_grid=True
+        self.xmin=-0
+        self.xmax=self.maxPoints
+        self.ymin=-0
+        self.ymax=1024
+
         self.plot = kg.MeshLinePlot(color=[1, 0, 0, 1])
-        self.graph.add_plot(self.plot)
-        self.add_widget(self.graph)
+        self.add_plot(self.plot)
+
+    def setDataSource(self, dataSource):
+        self.dataSource = dataSource
 
     def update_points(self, *args):
         data = self.dataSource.getAll()
@@ -28,9 +42,9 @@ class Graph(Widget):
              self.plot.points = [(x, self.points[x]) for x in range(0, len(self.points))]
 
     def update_axis(self, *args):
-        self.graph.xmax = self.maxPoints
+        self.xmax = self.maxPoints
         if len(self.points) > 0:
-            self.graph.ymax = max(self.points)
+            self.ymax = max(self.points)
 
     def update(self, dt):
         self.update_points(dt)

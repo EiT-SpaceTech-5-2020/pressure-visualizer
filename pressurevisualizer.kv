@@ -1,5 +1,5 @@
 #:kivy 1.11.1
-
+#:include CustomGraph.kv
 
 <Menu>:
     manager: screen_manager
@@ -24,8 +24,9 @@
         id: screen_manager
 
 <ScreenVisualize>:
-    Button:
-        text: "Visualize"
+	on_enter: self.onEnter()
+    CustomGraph:
+
 <ScreenExport>:
     Button:
         text: "Export"

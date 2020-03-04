@@ -2,9 +2,10 @@ from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager,Screen
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
+from kivy.clock import Clock
 
 from SerialAdapter import SerialAdapter
-from Graph import Graph
+from CustomGraph import CustomGraph
 
 global sa
 
@@ -13,7 +14,13 @@ class Menu(BoxLayout):
 
 
 class ScreenVisualize(Screen):
-    pass
+    loaded = False
+    def onEnter(self):
+        if not self.loaded:
+            self.loaded = True
+            global sa
+            self.children[0].setDataSource(sa)
+            Clock.schedule_interval(self.children[0].update, 1.0 / 60.0)
 
 
 class ScreenExport(Screen):
@@ -32,6 +39,7 @@ class Manager(ScreenManager):
 
 class PressureVisualizer(App):
     def build(self):
+        global sa
         sa = SerialAdapter()
         sa.open('COM1')
         sa.startReading()
@@ -41,7 +49,3 @@ class PressureVisualizer(App):
 
 if __name__ == '__main__':
     PressureVisualizer().run()
-
-#graph = Graph(sa)
-#Clock.schedule_interval(graph.update, 1.0 / 60.0)
-#self.add_widget(graph)
