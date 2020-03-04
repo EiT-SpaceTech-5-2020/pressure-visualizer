@@ -9,11 +9,11 @@ from CustomGraph import CustomGraph
 
 global sa
 
-class Menu(BoxLayout):
+class RootContainer(BoxLayout):
     manager = ObjectProperty(None)
     
     def __init__(self, **kwargs):
-        super(Menu, self).__init__(**kwargs)
+        super(RootContainer, self).__init__(**kwargs)
         self.manager.screen_visualize.onEnter()
 
 class ScreenVisualize(Screen):
@@ -46,7 +46,7 @@ class PressureVisualizer(App):
         sa = SerialAdapter()
         sa.open('COM1')
         sa.startReading()
-        return Menu()
+        return RootContainer()
     def visualize(self):
         print("WOOO")
 

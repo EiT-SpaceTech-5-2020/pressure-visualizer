@@ -36,7 +36,6 @@ class CustomGraph(kg.Graph):
         data = self.dataSource.getAll()
         if len(data) > 0:
              self.points.extend(data)
-             print(self.points)
              if len(self.points) >= self.maxPoints:
                  self.points = self.points[1-self.maxPoints:]
              self.plot.points = [(x, self.points[x]) for x in range(0, len(self.points))]
@@ -48,5 +47,5 @@ class CustomGraph(kg.Graph):
 
     def update(self, dt):
         self.update_points(dt)
-        self.update_axis(dt)
+        #self.update_axis(dt)
         pass
