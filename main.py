@@ -11,7 +11,10 @@ global sa
 
 class Menu(BoxLayout):
     manager = ObjectProperty(None)
-
+    
+    def __init__(self, **kwargs):
+        super(Menu, self).__init__(**kwargs)
+        self.manager.screen_visualize.onEnter()
 
 class ScreenVisualize(Screen):
     loaded = False
