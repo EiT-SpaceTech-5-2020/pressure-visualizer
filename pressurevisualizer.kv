@@ -10,15 +10,16 @@
             ActionPrevious:
             ActionButton:
                 text: "Visualize"
-                on_press: 
-                    root.manager.current = 'screen_visualize'
-                    app.visualize()
+                on_press: root.manager.setScreen('screen_visualize')
             ActionButton:
                 text: "Export"
-                on_press: root.manager.current= 'screen_export'
+                on_press: root.manager.setScreen('screen_export')
             ActionButton:
                 text: "Calibrate"
-                on_press: root.manager.current= 'screen_calibrate'
+                on_press: root.manager.setScreen('screen_calibrate')
+			ActionButton:
+                text: "Settings"
+                on_press: root.manager.setScreen('screen_settings')
 
     Manager:
         id: screen_manager
@@ -30,15 +31,20 @@
 <ScreenExport>:
     Button:
         text: "Export"
+
 <ScreenCalibrate>:
     Button:
         text: "Calibrate"
+
+<ScreenSettings>:
+	on_enter: self.onEnter()
 
 <Manager>:
     id: screen_manager
     screen_visualize: screen_visualize
     screen_export: screen_export
     screen_calibrate: screen_calibrate
+	screen_settings: screen_settings
 
     ScreenVisualize:
         id: screen_visualize
@@ -51,4 +57,8 @@
     ScreenCalibrate:
         id: screen_calibrate
         name: 'screen_calibrate'
+        manager: screen_manager
+	ScreenSettings:
+        id: screen_settings
+        name: 'screen_settings'
         manager: screen_manager

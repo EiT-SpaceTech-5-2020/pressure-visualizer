@@ -1,22 +1,49 @@
 import csv
 import datetime
 import os
+from Settings import Settings
 
 class FileAdapter(object):
     points = []
-    pointsPerRow = 20
-    path = "data/"
+    dir = ''
+    pointsPerRow = 1
 
-    def __init__(self):
+    def __init__(self, settings : Settings):
+        self.settings = settings
+        settings.addCallback(self.onDirChanged, 'data', 'dir')
+        settings.addCallback(self.onPPRChanged, 'data', 'ppr')
+
+
+    def onDirChanged(self, section, key, value):
+        if value == None or value == '':
+            value = self.settings.getDefault(section, key)
+            self.settings.config.set(section, key, value)
+        if not os.path.isdir(value):
+            value = os.path.dirname(value)
+            self.settings.config.set(section, key, value)
+
+        if not os.path.exists(value):
+            os.makedirs(value)
+
+        if self.dir != value:
+            self.dir = value
+            self.setFilename()
+
+
+    def onPPRChanged(self, section, key, value):
+        value = int(value)
+        if value < 1:
+            value = 1
+            self.settings.config.set(section, key, value)
+
+        if self.pointsPerRow != value:
+            self.pointsPerRow = value
+            self.setFilename()
+
+
+    def setFilename(self):
         now = datetime.datetime.now()
-        self.setPath(self.path)
-        self.fileName = self.path + now.strftime("%Y-%m-%d-%H-%M-%S") + '.csv'
-
-
-    def setPath(self, newPath):
-        self.path = newPath
-        if not os.path.exists(newPath):
-            os.makedirs(newPath)
+        self.fileName = os.path.join(self.dir, now.strftime("%Y-%m-%d-%H-%M-%S")) + '.csv'
 
 
     def addPoints(self, data):
