@@ -5,9 +5,11 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.clock import Clock
 
 from SerialAdapter import SerialAdapter
+from DataRouter import DataRouter
 from CustomGraph import CustomGraph
 
 global sa
+global dr
 
 class RootContainer(BoxLayout):
     manager = ObjectProperty(None)
@@ -16,14 +18,14 @@ class RootContainer(BoxLayout):
         super(RootContainer, self).__init__(**kwargs)
         self.manager.screen_visualize.onEnter()
 
+
 class ScreenVisualize(Screen):
     loaded = False
     def onEnter(self):
         if not self.loaded:
             self.loaded = True
-            global sa
-            self.children[0].setDataSource(sa)
-            Clock.schedule_interval(self.children[0].update, 1.0 / 60.0)
+            global dr
+            dr.addListener(self.children[0].addPoints)
 
 
 class ScreenExport(Screen):
@@ -32,6 +34,14 @@ class ScreenExport(Screen):
 
 class ScreenCalibrate(Screen):
     pass
+
+
+def update(self, **kwargs):
+    global sa
+    global dr
+    data = sa.getAll();
+    if len(data) > 0:
+        dr.recieve(data)
 
 
 class Manager(ScreenManager):
@@ -46,12 +56,22 @@ class PressureVisualizer(App):
         sa = SerialAdapter()
         sa.open('COM1')
         sa.startReading()
+
+        global dr
+        dr = DataRouter()
+
+        Clock.schedule_interval(update, 1.0 / 60.0)
+
         return RootContainer()
+
+
     def visualize(self):
         print("WOOO")
 
+
 def main():
     PressureVisualizer().run()
+
 
 if __name__ == '__main__':
     main()

@@ -29,23 +29,25 @@ class CustomGraph(kg.Graph):
         self.plot = kg.MeshLinePlot(color=[1, 0, 0, 1])
         self.add_plot(self.plot)
 
+
     def setDataSource(self, dataSource):
         self.dataSource = dataSource
 
-    def update_points(self, *args):
-        data = self.dataSource.getAll()
+
+    def updatePoints(self, data):
         if len(data) > 0:
              self.points.extend(data)
              if len(self.points) >= self.maxPoints:
                  self.points = self.points[1-self.maxPoints:]
              self.plot.points = [(x, self.points[x]) for x in range(0, len(self.points))]
 
-    def update_axis(self, *args):
+
+    def updateAxis(self, *args):
         self.xmax = self.maxPoints
         if len(self.points) > 0:
             self.ymax = max(self.points)
 
-    def update(self, dt):
-        self.update_points(dt)
-        #self.update_axis(dt)
-        pass
+
+    def addPoints(self, data):
+        self.updatePoints(data)
+        #self.updateAxis(dt)

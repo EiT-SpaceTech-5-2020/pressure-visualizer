@@ -24,5 +24,4 @@ while True:
     value = int((np.sin(x) + 1) / 2 * np.power(2, 10) * (1.0 - random.random()*0.1))
     print(value)
     ser.write(value.to_bytes(2, byteorder="little", signed=False))
-    #os.system("echo " + str(np.sin(x)) + " > COM2")
     time.sleep(0.01)
