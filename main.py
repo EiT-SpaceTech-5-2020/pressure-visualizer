@@ -6,10 +6,12 @@ from kivy.clock import Clock
 
 from SerialAdapter import SerialAdapter
 from DataRouter import DataRouter
+from FileAdapter import FileAdapter
 from CustomGraph import CustomGraph
 
 global sa
 global dr
+global fa
 
 class RootContainer(BoxLayout):
     manager = ObjectProperty(None)
@@ -59,6 +61,10 @@ class PressureVisualizer(App):
 
         global dr
         dr = DataRouter()
+
+        global fa
+        fa = FileAdapter()
+        dr.addListener(fa.addPoints)
 
         Clock.schedule_interval(update, 1.0 / 60.0)
 
