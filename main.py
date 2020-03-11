@@ -50,5 +50,8 @@ class PressureVisualizer(App):
     def visualize(self):
         print("WOOO")
 
-if __name__ == '__main__':
+def main():
     PressureVisualizer().run()
+
+if __name__ == '__main__':
+    main()
