@@ -2,6 +2,7 @@ import csv
 import datetime
 import os
 from Settings import Settings
+from kivy.logger import Logger
 
 class FileAdapter(object):
     points = []
@@ -26,6 +27,7 @@ class FileAdapter(object):
             os.makedirs(value)
 
         if self.dir != value:
+            Logger.debug('FileAdapter: Dir changed: %s', value)
             self.dir = value
             self.setFilename()
 
@@ -37,6 +39,7 @@ class FileAdapter(object):
             self.settings.config.set(section, key, value)
 
         if self.pointsPerRow != value:
+            Logger.debug('FileAdapter: PPR changed: %d', value)
             self.pointsPerRow = value
             self.setFilename()
 
@@ -44,7 +47,7 @@ class FileAdapter(object):
     def setFilename(self):
         now = datetime.datetime.now()
         self.fileName = os.path.join(self.dir, now.strftime("%Y-%m-%d-%H-%M-%S")) + '.csv'
-
+        Logger.debug('FileAdapter: Setting file: %s', self.fileName)
 
     def addPoints(self, data):
         if len(data) > 0:

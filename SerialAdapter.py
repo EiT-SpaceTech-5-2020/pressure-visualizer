@@ -1,18 +1,19 @@
+import time
+from threading import Thread
 from serial import *
 import serial.tools.list_ports
-from threading import Thread
-import time
+from kivy.logger import Logger
 
 class SerialAdapter:
     __stopReading = False
-    thread = None
+    __thread = None
     
     def __init__(self, settings):
+        Logger.info('Serial: Initializing')
         self.settings = settings
 
         self.values = []
         self.ser = Serial(
-            port=settings.get('com','port'),
             baudrate=int(settings.get('com','baudrate')), 
             bytesize=SerialAdapter.BYTESIZE[settings.get('com','bytesize')], 
             parity=SerialAdapter.PARITY[settings.get('com','parity')], 
@@ -22,15 +23,26 @@ class SerialAdapter:
             rtscts=0,
             interCharTimeout=None
         )
+        self.ser.setPort(settings.get('com','port'))
 
         settings.addCallback(self.onValueChanged, 'com')
 
 
     def open(self):
-        if not self.ser.isOpen():
-            self.ser.open()
-        if self.thread == None:
-            self.startReading()
+        try:
+            if not self.ser.isOpen() or self.__thread == None:
+                Logger.info('Serial: Attempting to open port: %s', self.ser.port)
+                if not self.ser.isOpen():
+                    self.ser.open()
+                if self.__thread == None:
+                    self.startReading()
+
+        except SerialException as e:
+            Logger.error('Serial: Failed to open port: %s', self.ser.port)
+            Logger.error('Serial: %s', e.args[0])
+            self.close()
+            self.stopReading()
+
 
     def onValueChanged(self, section, key, value):
         if self.ser.isOpen():
@@ -51,6 +63,7 @@ class SerialAdapter:
 
 
     def close(self):
+        Logger.info('Serial: Closing port: %s', self.ser.port)
         self.stopReading()
         if self.ser.isOpen():
             self.ser.close()
@@ -62,15 +75,17 @@ class SerialAdapter:
 
     def startReading(self):
         if self.ser.isOpen():
-            self.thread = Thread(target=self.receiving, args=())
-            self.thread.start()
+            Logger.debug('Serial: Start reading')
+            self.__thread = Thread(target=self.receiving, args=())
+            self.__thread.start()
 
 
     def stopReading(self):
-        if self.thread != None:
+        if self.__thread != None:
+            Logger.debug('Serial: Stop reading')
             self.__stopReading = True
-            self.thread.join()
-            self.thread = None
+            self.__thread.join()
+            self.__thread = None
             self.__stopReading = False
 
 
@@ -80,15 +95,15 @@ class SerialAdapter:
         while not self.__stopReading:
             # Read available data
             buffer += self.ser.read(self.ser.inWaiting())
-            #if len(buffer) > 0:
-                #print('[SerialAdapter] Buffer: ', buffer)
+            if len(buffer) > 0:
+                Logger.trace('Serial: Recieve buffer: %s', buffer)
 
             if len(buffer) >= 2:
                 value = buffer[:2]
                 buffer = buffer[2:]
                 value = int.from_bytes(value, byteorder='little', signed=False);
                 self.values.append(value)
-                #print('[SerialAdapter] Value: ', value)
+                Logger.trace('Serial: Recieve value: %d', value)
 
 
     def getAll(self):
@@ -98,6 +113,7 @@ class SerialAdapter:
 
 
     def write(self, data):
+        Logger.trace('Serial: Writing: %d', data)
         self.ser.write(data)
 
 

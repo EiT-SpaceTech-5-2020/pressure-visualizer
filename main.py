@@ -10,6 +10,8 @@ from FileAdapter import FileAdapter
 from CustomGraph import CustomGraph
 from Settings import Settings
 
+from kivy.logger import Logger
+
 global sa
 global dr
 global fa
@@ -73,11 +75,7 @@ class Manager(ScreenManager):
 
 class PressureVisualizer(App):
     def build(self):
-
         global settings
-        settings = Settings()
-        settings.load('config.ini')
-
         global sa
         sa = SerialAdapter(settings)
         sa.open()
@@ -95,6 +93,10 @@ class PressureVisualizer(App):
 
 
 def main():
+    global settings
+    settings = Settings()
+    settings.load('config.ini')
+
     PressureVisualizer().run()
 
 

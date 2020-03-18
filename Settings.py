@@ -1,10 +1,20 @@
+from kivy.logger import Logger
+from kivy.config import Config
 from kivy.config import ConfigParser
 from kivy.uix.settings import SettingsWithNoMenu, SettingTitle, Label
+
 from SerialAdapter import SerialAdapter
 
 class Settings:
 
     __defaults = {
+        'kivy': {
+            'log_level': 'debug', # TODO: Change default to info
+            'log_enable': 1, 
+            'log_dir': 'logs', 
+            'log_name': 'ps_%y-%m-%d_%_.txt', 
+            'log_maxfiles': 100
+        },
         'data': {
             'dir': 'data/', 
             'ppr': 20
@@ -24,13 +34,20 @@ class Settings:
 
 
     def load(self, filename):
-        self.config.read(filename)
         for k, v in self.__defaults.items():
             self.config.setdefaults(k, v)
+        self.config.read(filename)
+        self.config.write()
 
+        Config.read(filename)
+
+        Logger.info('Settings: Loaded setting file: %s', filename)
+
+        Logger.debug('Settings: Setting up panel')
         self.panel = self.widget.create_json_panel('Settings', self.config, data=self.windgetconfigdata)
         self.widget.children[0].add_widget(self.panel)
 
+        Logger.debug('Settings: Setting options')
         self.setPanelOptions('port', SerialAdapter.getPortNames())
         self.setPanelOptions('bytesize', SerialAdapter.BYTESIZE.keys())
         self.setPanelOptions('parity', SerialAdapter.PARITY.keys())
@@ -38,6 +55,7 @@ class Settings:
 
 
     def updateAvailablePorts(self):
+        Logger.debug('Settings: Setting port options')
         self.setPanelOptions('port', SerialAdapter.getPortNames())
     
             
@@ -55,6 +73,7 @@ class Settings:
 
 
     def addCallback(self, callback, section = None, key = None):
+        Logger.debug('Settings: Adding callback: %s, %s', section, key)
         self.config.add_callback(callback, section, key)
         if key != None:
             callback(section, key, self.get(section, key))
