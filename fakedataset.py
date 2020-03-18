@@ -6,7 +6,7 @@ import numpy as np
 from serial import *
 from threading import Thread
 
-targetValue = 0
+targetValue = 500
 delta = 1
 interval = 0.01
 
@@ -23,7 +23,9 @@ ser = Serial(
 )
 
 def threadFunc():
-    value = 0
+    global targetValue
+
+    value = targetValue
     while True:
         if np.abs(targetValue-value) < delta:
             value = targetValue
@@ -35,13 +37,17 @@ def threadFunc():
         time.sleep(interval)
 
 def main():
+    global targetValue
+    print("Target:", targetValue)
+
     thread = Thread(target=threadFunc, args=())
     thread.start()
 
     while True:
         x = input();
-        if x.isdigit() and int(x) > 0:
-            targetValue = int(x)
+        if x.isdigit():
+            targetValue = np.clip(int(x), 0, 1023)
+            print("Target:", targetValue)
 
 if __name__ == '__main__':
     main()
