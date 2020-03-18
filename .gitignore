@@ -2,5 +2,5 @@
 *.sln
 *.pyproj
 __pycache__/
-data/
+/data/
 config.ini
