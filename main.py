@@ -12,12 +12,6 @@ from Settings import Settings
 
 from kivy.logger import Logger
 
-global sa
-global dr
-global fa
-
-global settings
-
 class RootContainer(BoxLayout):
     manager = ObjectProperty(None)
     
@@ -53,9 +47,8 @@ class ScreenSettings(Screen):
 def update(self, **kwargs):
     global sa
     global dr
-    data = sa.getAll();
-    if len(data) > 0:
-        dr.recieve(data)
+    data = sa.getAll()
+    dr.recieve(data)
 
 
 class Manager(ScreenManager):
@@ -81,7 +74,7 @@ class PressureVisualizer(App):
         fa = FileAdapter(settings)
         dr.addListener(fa.addPoints)
 
-        Clock.schedule_interval(update, 1.0 / 60.0)
+        Clock.schedule_interval(update, 1.0/60)
 
         return RootContainer()
 
