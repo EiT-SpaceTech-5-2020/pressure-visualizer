@@ -59,7 +59,7 @@ class FileAdapter(object):
     def write(self):
         rows = []
         n = len(self.points)
-        step = self.pointsPerRow;
+        step = self.pointsPerRow
         mod = n % step
         for i in range(0, n - mod, step):  
             rows.append(self.points[i:i + step])

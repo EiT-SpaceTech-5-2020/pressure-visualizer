@@ -34,11 +34,6 @@ class ScreenVisualize(Screen):
             global dr
             dr.addListener(self.children[0].addPoints)
 
-
-class ScreenExport(Screen):
-    pass
-
-
 class ScreenCalibrate(Screen):
     pass
 
@@ -65,7 +60,6 @@ def update(self, **kwargs):
 
 class Manager(ScreenManager):
     screen_visualize = ObjectProperty(None)
-    screen_export = ObjectProperty(None)
     screen_calibrate = ObjectProperty(None)
     screen_settings = ObjectProperty(None)
 
