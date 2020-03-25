@@ -16,7 +16,7 @@ class Settings:
             'log_maxfiles': 100
         },
         'data': {
-            'dir': 'data/', 
+            'dir': './data/', 
             'ppr': 20
         },
         'com': {
