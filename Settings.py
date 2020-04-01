@@ -5,6 +5,7 @@ from kivy.uix.settings import SettingsWithNoMenu, SettingTitle, Label
 
 from SerialAdapter import SerialAdapter
 
+
 class Settings:
 
     __defaults = {
@@ -25,7 +26,13 @@ class Settings:
             'bytesize': '8',
             'parity': 'None',
             'stopbits': '1'
-        } 
+        },
+        'calibration': {
+          'user_point1': 0,
+          'sensor_point1': 0,
+          'user_point2': 2,
+          'sensor_point2': 1024
+        }
     }
 
     def __init__(self):
@@ -90,6 +97,9 @@ class Settings:
     def getDefault(self, section, key):
         return self.__defaults[section][key]
 
+    def saveConfig(self):
+        self.config.write()
+
 
     windgetconfigdata = """[
   {
@@ -106,7 +116,7 @@ class Settings:
   {
     "type": "numeric",
     "title": "Points per row",
-    "desc": "The numnber of data points per row in the data file",
+    "desc": "The number of data points per row in the data file",
     "key": "ppr",
     "section": "data"
   },

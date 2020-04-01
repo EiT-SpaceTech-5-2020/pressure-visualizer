@@ -8,6 +8,7 @@
         size_hint_y: 0.1
         ActionView:
             ActionPrevious:
+                app_icon:""
             ActionButton:
                 text: "Visualize"
                 on_press: root.manager.setScreen('screen_visualize')
@@ -26,8 +27,7 @@
     CustomGraph:
 
 <ScreenCalibrate>:
-    Button:
-        text: "Calibrate"
+    on_enter: self.onEnter()
 
 <ScreenSettings>:
 	on_enter: self.onEnter()
