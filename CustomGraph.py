@@ -9,6 +9,8 @@ class CustomGraph(kg.Graph):
     points = [0]
     maxPoints = 10
     fps = 60
+    stepSincePrevData = 0
+    maxStepSincePrevData = 100
 
     def __init__(self, **kwargs):
         super(CustomGraph, self).__init__(**kwargs)
@@ -37,10 +39,15 @@ class CustomGraph(kg.Graph):
 
     def updatePoints(self, data):
         if len(data) > 0:
+            self.stepSincePrevData = 0
             self.points.append(data[-1])
         else:
-            self.points.append(self.points[-1])
-        
+            self.stepSincePrevData += 1
+            if self.stepSincePrevData < self.maxStepSincePrevData:
+                self.points.append(self.points[-1])
+            else:
+                self.points.append(0)
+            
         if len(self.points) >= self.maxPoints*self.fps:
             self.points = self.points[1-self.maxPoints*self.fps:]
             self.updateXticks(2)
