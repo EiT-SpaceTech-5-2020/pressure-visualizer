@@ -8,8 +8,12 @@ class FileAdapter(object):
     points = []
     dir = ''
     pointsPerRow = 1
+    __nodataCounter = 0
+    __nodata = False
 
     def __init__(self, settings : Settings):
+        self.__nodataCounter = 0;
+        self.__nodata = False
         self.settings = settings
         settings.addCallback(self.onDirChanged, 'data', 'dir')
         settings.addCallback(self.onPPRChanged, 'data', 'ppr')
@@ -51,10 +55,26 @@ class FileAdapter(object):
 
     def addPoints(self, data):
         if len(data) > 0:
-            self.points.extend(data)
-            if len(self.points) >= self.pointsPerRow:
-                self.write()
+            if self.__nodata:
+                self.__nodata = False
+                self.__nodataCounter = 0
+                self.setFilename()
+            self.points.append(data[-1])
+        else:
+            if len(self.points) > 0:
+                self.points.append(self.points[-1])
+            else:
+                self.points.append(0)
+            self.__nodataCounter += 1
 
+        if self.__nodataCounter >= self.pointsPerRow:
+            self.__nodata = True
+            self.points.clear()
+
+        if len(self.points) >= self.pointsPerRow and not self.__nodata:
+            self.__nodataCounter = 0
+            self.write()
+            
 
     def write(self):
         rows = []
@@ -63,7 +83,11 @@ class FileAdapter(object):
         mod = n % step
         for i in range(0, n - mod, step):  
             rows.append(self.points[i:i + step])
-        self.points = self.points[-mod:]
+
+        if mod == 0:
+            self.points.clear()
+        else:
+            self.points = self.points[-mod:]
 
         with open(self.fileName, 'a', newline='') as csv_file:
             writer = csv.writer(csv_file, delimiter=',')
