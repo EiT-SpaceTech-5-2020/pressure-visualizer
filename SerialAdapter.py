@@ -90,21 +90,13 @@ class SerialAdapter:
 
 
     def receiving(self):
-        buffer = [] 
         self.ser.flushInput()
         while not self.__stopReading:
-            # Read available data
-            buffer += self.ser.read(self.ser.inWaiting())
-            if len(buffer) > 0:
-                Logger.trace('Serial: Recieve buffer: %s', buffer)
-
-            if len(buffer) >= 2:
-                value = buffer[:2]
-                buffer = buffer[2:]
-                value = int.from_bytes(value, byteorder='little', signed=False);
-                self.values.append(value)
-                Logger.trace('Serial: Recieve value: %d', value)
-
+            rcv = self.ser.readline()
+            rcv = rcv.decode("utf-8")
+            rcv = rcv.replace('\r', '').replace('\n', '')
+            if rcv != "":
+                self.values.append(int(rcv))
 
     def getAll(self):
         temp = self.values.copy()

@@ -94,7 +94,6 @@ def update(self, **kwargs):
     global previousDataPoints
     previousDataPoints.extend(data)
     previousDataPoints = previousDataPoints[1 - maxPoints:]
-
     bar = m*data + b
     dr.recieve(bar)
 
